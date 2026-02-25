@@ -20,8 +20,9 @@ export default function LampGalleryClient({ lamps }: { lamps: LampClient[] }) {
     return (
         <section className="grid" aria-label="Galerie de lampes">
             {lamps.map((lamp) => {
-                const src = theme === "dark" ? `/src/assets/lamps/${lamp.code}.JPG`
-                    : `/src/assets/lamps/${lamp.code}-off.JPG`;
+                const src = theme === "dark"
+                    ? `/lamps/${lamp.code}.JPG`
+                    : `/lamps/${lamp.code}-off.JPG`;
 
                 return (
                     <article
