@@ -1,0 +1,36 @@
+---
+import { getImage } from "astro:assets";
+import LampGalleryClient from "./LampGalleryClient.tsx";
+
+const raw = [
+    { name: "Lampe Aurore", code: "lamp1", price: "100 €", src: "/src/assets/lamps/lamp1.JPG" },
+    { name: "Lampe Nébula", code: "lamp2", price: "100 €", src: "/src/assets/lamps/lamp2.JPG" },
+    { name: "Lampe Halo", code: "lamp3", price: "100 €", src: "/src/assets/lamps/lamp3.JPG" },
+];
+
+const lamps = await Promise.all(
+    raw.map(async (lamp) => {
+        const optimized = await getImage({
+            src: lamp.src,
+            width: 800,
+            height: 600,
+            format: "webp",
+        });
+
+        return {
+            name: lamp.name,
+            code: lamp.code,
+            price: lamp.price,
+            img: {
+                src: optimized.src,
+                srcset: optimized.srcSet.attribute,
+                sizes: "(max-width: 900px) 100vw, 33vw",
+                width: optimized.attributes.width,
+                height: optimized.attributes.height,
+            },
+        };
+  })
+);
+---
+
+<LampGalleryClient client:load lamps={lamps} />

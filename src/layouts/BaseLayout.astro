@@ -1,0 +1,29 @@
+---
+const { title = "Lampes" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="fr" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+
+    <!-- Set theme BEFORE paint (évite le flash) -->
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem("theme"); // "light" | "dark"
+        if (saved === "dark") document.documentElement.dataset.theme = "dark";
+      })();
+    </script>
+
+    <link rel="stylesheet" href="/src/styles/global.css" />
+  </head>
+
+  <body>
+    <div class="bg-aurora" aria-hidden="true"></div>
+    <main class="container">
+      <slot />
+    </main>
+  </body>
+</html>
