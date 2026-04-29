@@ -2,35 +2,41 @@
 import { getImage } from "astro:assets";
 import LampGalleryClient from "./LampGalleryClient.tsx";
 
-const raw = [
-    { name: "Lampe Aurore", code: "lamp1", price: "100 €", src: "/src/assets/lamps/lamp1.JPG" },
-    { name: "Lampe Nébula", code: "lamp2", price: "100 €", src: "/src/assets/lamps/lamp2.JPG" },
-    { name: "Lampe Halo", code: "lamp3", price: "100 €", src: "/src/assets/lamps/lamp3.JPG" },
+import lamp1Dark from "../assets/lamps/lamp1.JPG";
+import lamp1Light from "../assets/lamps/lamp1-off.JPG";
+import lamp2Dark from "../assets/lamps/lamp2.JPG";
+import lamp2Light from "../assets/lamps/lamp2-off.JPG";
+import lamp3Dark from "../assets/lamps/lamp3.JPG";
+import lamp3Light from "../assets/lamps/lamp3-off.JPG";
+
+import type { ImageMetadata } from "astro";
+
+async function optimizeImg(src: ImageMetadata) {
+    const result = await getImage({ src, width: 800, format: "webp" });
+    return {
+        src: result.src,
+        srcset: result.srcSet.attribute,
+        sizes: "(max-width: 900px) 100vw, 33vw",
+        width: result.attributes.width as number,
+        height: result.attributes.height as number,
+    };
+}
+
+const rawLamps = [
+    { name: "Lampe Aurore", code: "lamp1", price: "100 €", darkSrc: lamp1Dark, lightSrc: lamp1Light },
+    { name: "Lampe Nébula",  code: "lamp2", price: "100 €", darkSrc: lamp2Dark, lightSrc: lamp2Light },
+    { name: "Lampe Halo",    code: "lamp3", price: "100 €", darkSrc: lamp3Dark, lightSrc: lamp3Light },
 ];
 
 const lamps = await Promise.all(
-    raw.map(async (lamp) => {
-        const optimized = await getImage({
-            src: lamp.src,
-            width: 800,
-            height: 600,
-            format: "webp",
-        });
-
-        return {
-            name: lamp.name,
-            code: lamp.code,
-            price: lamp.price,
-            img: {
-                src: optimized.src,
-                srcset: optimized.srcSet.attribute,
-                sizes: "(max-width: 900px) 100vw, 33vw",
-                width: optimized.attributes.width,
-                height: optimized.attributes.height,
-            },
-        };
-  })
+    rawLamps.map(async (lamp) => ({
+        name: lamp.name,
+        code: lamp.code,
+        price: lamp.price,
+        darkImg: await optimizeImg(lamp.darkSrc),
+        lightImg: await optimizeImg(lamp.lightSrc),
+    }))
 );
 ---
 
-<LampGalleryClient client:load lamps={lamps} />
+<LampGalleryClient client:only="react" lamps={lamps} />

@@ -1,18 +1,20 @@
-// LampGalleryClient.tsx
 import type { CSSProperties } from "react";
 import { useDocumentTheme } from "../hooks/useDocumentTheme";
+
+type OptimizedImg = {
+    src: string;
+    srcset?: string;
+    sizes?: string;
+    width: number;
+    height: number;
+};
 
 type LampClient = {
     name: string;
     code: string;
     price: string;
-    img: {
-        src: string;
-        srcset?: string;
-        sizes?: string;
-        width: number;
-        height: number;
-    };
+    darkImg: OptimizedImg;
+    lightImg: OptimizedImg;
 };
 
 export default function LampGalleryClient({ lamps }: { lamps: LampClient[] }) {
@@ -20,26 +22,23 @@ export default function LampGalleryClient({ lamps }: { lamps: LampClient[] }) {
     return (
         <section className="grid" aria-label="Galerie de lampes">
             {lamps.map((lamp) => {
-                const src = theme === "dark"
-                    ? `/lamps/${lamp.code}.JPG`
-                    : `/lamps/${lamp.code}-off.JPG`;
+                const img = theme === "dark" ? lamp.darkImg : lamp.lightImg;
 
                 return (
                     <article
                         key={lamp.code}
                         className="card glass lamp-card"
-                        style={{ ["--img" as any]: `url(${src})` } as CSSProperties}
+                        style={{ ["--img" as any]: `url(${img.src})` } as CSSProperties}
                     >
-                        {/* wrapper overflow visible => halo visible sous l'image */}
                         <div className="media-wrap">
                             <div className="media">
                                 <img
                                     className="lamp-img"
-                                    src={src}
-                                    srcSet={lamp.img.srcset}
-                                    sizes={lamp.img.sizes}
-                                    width={lamp.img.width}
-                                    height={lamp.img.height}
+                                    src={img.src}
+                                    srcSet={img.srcset}
+                                    sizes={img.sizes}
+                                    width={img.width}
+                                    height={img.height}
                                     alt={lamp.name}
                                     loading="lazy"
                                     decoding="async"
@@ -53,8 +52,7 @@ export default function LampGalleryClient({ lamps }: { lamps: LampClient[] }) {
                         </div>
                     </article>
                 );
-            })
-            }
+            })}
         </section>
     );
 }
