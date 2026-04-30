@@ -369,3 +369,352 @@ body {
     opacity: 0.78;
     font-size: 13px;
 }
+
+/* -----------------------
+   Add-lamp: floating trigger
+   (discreet glass FAB, mobile + desktop)
+------------------------ */
+.add-lamp-fab {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 40;
+
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    padding: 0;
+    cursor: pointer;
+    color: var(--text);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+    line-height: 1;
+    font-weight: 300;
+
+    /* glass class already provides bg/border/blur/shadow,
+       but we want it slightly more subtle by default */
+    opacity: 0.45;
+    transition: opacity 200ms ease, transform 160ms ease;
+}
+
+.add-lamp-fab:hover,
+.add-lamp-fab:focus-visible {
+    opacity: 1;
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.add-lamp-fab:active {
+    transform: scale(0.96);
+}
+
+@media (min-width: 760px) {
+    .add-lamp-fab {
+        right: 24px;
+        bottom: 24px;
+    }
+}
+
+/* -----------------------
+   Add-lamp: modal
+------------------------ */
+.add-lamp-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(7, 9, 19, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+
+    animation: fade-in 180ms ease;
+}
+
+@media (min-width: 640px) {
+    .add-lamp-backdrop {
+        align-items: center;
+        padding: 24px;
+    }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.add-lamp-modal {
+    width: 100%;
+    max-width: 520px;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 18px 18px 16px;
+
+    /* mobile: bottom sheet feel */
+    border-radius: 22px 22px 0 0;
+    animation: slide-up 220ms ease;
+}
+
+@media (min-width: 640px) {
+    .add-lamp-modal {
+        border-radius: var(--radius);
+        animation: pop-in 220ms ease;
+    }
+}
+
+@keyframes slide-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes pop-in {
+    from { transform: scale(0.96); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+}
+
+.add-lamp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.add-lamp-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 650;
+    letter-spacing: 0.2px;
+}
+
+.add-lamp-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: background 160ms ease, transform 120ms ease;
+}
+
+.add-lamp-close:hover { background: rgba(255, 255, 255, 0.16); }
+.add-lamp-close:active { transform: scale(0.96); }
+
+.add-lamp-note {
+    font-size: 12px;
+    opacity: 0.7;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px dashed var(--glass-border);
+}
+
+.add-lamp-form {
+    display: grid;
+    gap: 12px;
+}
+
+.add-lamp-field {
+    display: grid;
+    gap: 4px;
+    font-size: 13px;
+}
+
+.add-lamp-field > span {
+    opacity: 0.78;
+}
+
+.add-lamp-field input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.10);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 160ms ease, background 160ms ease;
+}
+
+:root[data-theme="light"] .add-lamp-field input {
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.add-lamp-field input::placeholder {
+    color: currentColor;
+    opacity: 0.45;
+}
+
+.add-lamp-field input:focus {
+    border-color: rgba(255, 200, 120, 0.55);
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.add-lamp-images {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 520px) {
+    .add-lamp-images {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.img-picker {
+    display: grid;
+    gap: 6px;
+}
+
+.img-picker-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12.5px;
+    opacity: 0.85;
+    gap: 8px;
+}
+
+.img-picker-label em {
+    font-style: normal;
+    font-size: 11px;
+    opacity: 0.65;
+}
+
+.img-picker-label em.required {
+    color: rgba(255, 180, 100, 0.95);
+    opacity: 1;
+}
+
+.img-picker-drop {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 5;
+    border-radius: 14px;
+    border: 1px dashed var(--glass-border);
+    background: rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    cursor: pointer;
+    transition: background 160ms ease, border-color 160ms ease;
+}
+
+:root[data-theme="light"] .img-picker-drop {
+    background: rgba(255, 255, 255, 0.45);
+}
+
+.img-picker-drop:hover {
+    border-color: rgba(255, 200, 120, 0.6);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.img-picker-drop img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.img-picker-empty {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 4px;
+    text-align: center;
+    color: var(--text);
+    opacity: 0.6;
+    padding: 8px;
+}
+
+.img-picker-empty .plus {
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 300;
+}
+
+.img-picker-empty .txt {
+    font-size: 12px;
+}
+
+.img-picker-clear {
+    justify-self: end;
+    font-size: 11.5px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text);
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 160ms ease, background 160ms ease;
+}
+
+.img-picker-clear:hover { opacity: 1; background: rgba(255, 255, 255, 0.18); }
+
+.add-lamp-err {
+    color: rgba(255, 140, 120, 0.95);
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(255, 80, 80, 0.10);
+    border: 1px solid rgba(255, 140, 120, 0.28);
+}
+
+.add-lamp-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 4px;
+}
+
+.add-lamp-btn {
+    font: inherit;
+    font-size: 14px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid var(--glass-border);
+    transition: transform 120ms ease, background 160ms ease, opacity 160ms ease;
+    color: var(--text);
+}
+
+.add-lamp-btn:active { transform: scale(0.98); }
+.add-lamp-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+
+.add-lamp-btn.ghost {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.add-lamp-btn.ghost:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.add-lamp-btn.primary {
+    background: rgba(255, 200, 120, 0.85);
+    color: #1a1408;
+    border-color: rgba(255, 200, 120, 0.6);
+    box-shadow: 0 8px 24px rgba(255, 180, 100, 0.25);
+}
+
+.add-lamp-btn.primary:hover {
+    background: rgba(255, 210, 140, 0.95);
+}

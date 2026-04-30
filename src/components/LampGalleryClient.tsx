@@ -1,5 +1,6 @@
-import type { CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useDocumentTheme } from "../hooks/useDocumentTheme";
+import { subscribeLamps, type CustomLamp } from "../lib/lampStore";
 
 type OptimizedImg = {
     src: string;
@@ -17,28 +18,73 @@ type LampClient = {
     lightImg: OptimizedImg;
 };
 
+type RenderedLamp = {
+    key: string;
+    name: string;
+    price: string;
+    darkSrc: string;
+    lightSrc: string;
+    darkImg?: OptimizedImg;
+    lightImg?: OptimizedImg;
+};
+
+function customToRendered(c: CustomLamp): RenderedLamp {
+    return {
+        key: c.id,
+        name: c.name,
+        price: c.price,
+        darkSrc: c.darkSrc,
+        lightSrc: c.lightSrc ?? c.darkSrc, // fall back to dark if no light provided
+    };
+}
+
+function builtInToRendered(b: LampClient): RenderedLamp {
+    return {
+        key: b.code,
+        name: b.name,
+        price: b.price,
+        darkSrc: b.darkImg.src,
+        lightSrc: b.lightImg.src,
+        darkImg: b.darkImg,
+        lightImg: b.lightImg,
+    };
+}
+
 export default function LampGalleryClient({ lamps }: { lamps: LampClient[] }) {
     const { theme } = useDocumentTheme();
+    const [custom, setCustom] = useState<CustomLamp[]>([]);
+
+    useEffect(() => {
+        const unsub = subscribeLamps(setCustom);
+        return () => unsub();
+    }, []);
+
+    const all: RenderedLamp[] = [
+        ...lamps.map(builtInToRendered),
+        ...custom.map(customToRendered),
+    ];
+
     return (
         <section className="grid" aria-label="Galerie de lampes">
-            {lamps.map((lamp) => {
-                const img = theme === "dark" ? lamp.darkImg : lamp.lightImg;
+            {all.map((lamp) => {
+                const src = theme === "dark" ? lamp.darkSrc : lamp.lightSrc;
+                const optimized = theme === "dark" ? lamp.darkImg : lamp.lightImg;
 
                 return (
                     <article
-                        key={lamp.code}
+                        key={lamp.key}
                         className="card glass lamp-card"
-                        style={{ ["--img" as any]: `url(${img.src})` } as CSSProperties}
+                        style={{ ["--img" as any]: `url(${src})` } as CSSProperties}
                     >
                         <div className="media-wrap">
                             <div className="media">
                                 <img
                                     className="lamp-img"
-                                    src={img.src}
-                                    srcSet={img.srcset}
-                                    sizes={img.sizes}
-                                    width={img.width}
-                                    height={img.height}
+                                    src={src}
+                                    srcSet={optimized?.srcset}
+                                    sizes={optimized?.sizes}
+                                    width={optimized?.width}
+                                    height={optimized?.height}
                                     alt={lamp.name}
                                     loading="lazy"
                                     decoding="async"

@@ -2,6 +2,7 @@
 import Counter from "../components/Counter";
 import ThemeLampToggle from "../components/ThemeLampToggle";
 import LampGallery from "../components/LampGallery.astro";
+import LampAddForm from "../components/LampAddForm.tsx";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import "../styles/global.css";
 ---
@@ -28,6 +29,8 @@ import "../styles/global.css";
 		</header>
 
 		<LampGallery />
+
+		<LampAddForm client:only="react" />
 	</BaseLayout>
 </body>
 
